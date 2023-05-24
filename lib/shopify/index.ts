@@ -1,6 +1,5 @@
-import { GetAllProductsQuery } from "@/types/Product";
+import { Product } from "@/types/Product";
 import { isShopifyError } from "../type-guards";
-
 type ExtractVariables<T> = T extends { variables: object }
     ? T["variables"]
     : never;
@@ -34,6 +33,7 @@ export async function shopifyFetch<T>({
         });
 
         const body = await result.json();
+        console.log("body in fetch: ", body);
         if (body.errors) {
             throw body.errors[0];
         }
@@ -58,39 +58,37 @@ export async function shopifyFetch<T>({
     }
 }
 
+export type GetAllProducts = {
+    data: {
+        products: {
+            edges: {
+                node: Product;
+            }[];
+        };
+    };
+};
+
 export async function getAllProducts() {
-    return shopifyFetch({
-        query: `{
-          products(sortKey: TITLE, first: 100) {
-            edges{
-              node {
-                id
-                title
-                description
-
-    priceRangeV2 {
-      maxVariantPrice {
-        amount
-      }
-      minVariantPrice {
-        amount
-      }
-    }
-    totalInventory
-    featuredImage {
-      url
-      altText
-      width
-      height
-      src
-    }
-
-
-
+    return shopifyFetch<GetAllProducts>({
+        query: /* GraphQL */ `{
+            products(sortKey: TITLE, first: 100) {
+              edges{
+                node {
+                  ...product
+                }
               }
             }
           }
-        }
-`,
+          ${productFragment}
+        `,
     });
 }
+
+export async function getProductByHandle(handle:string) {
+    return shopifyFetch<any>({ query: getProductQuery, variables: {
+        handle
+    }})
+}
+
+import { getProductQuery}  from "./queries/Product";
+import productFragment from "./fragments/product";

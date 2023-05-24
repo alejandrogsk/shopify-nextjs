@@ -1,8 +1,9 @@
 export type Product = {
     id: string;
     title: string;
+    handle: string;
     description: string;
-    priceRangeV2: {
+    priceRange: {
         maxVariantPrice: {
             amount: string
         }
