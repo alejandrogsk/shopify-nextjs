@@ -1,4 +1,4 @@
-import { getAllProducts, getOneeeeProduct } from '@/lib/shopify'
+import { getAllProducts } from '@/lib/shopify'
 import { Product } from '@/types/Product';
 import Image from "next/image"
 
@@ -15,7 +15,7 @@ export type ReqAllPropducts = {
   }
 }
 
-export const getData = async () => {
+const getData = async () => {
   const req = await getAllProducts()
   if( req.status !== 200){
     throw new Error('Failed to fetch data');
@@ -23,19 +23,19 @@ export const getData = async () => {
   return req.body.data.products
 }
 
-export const gtOP = async () => {
-//const id = "gid://shopify/Product/8377766707510"
-let handle="balcones-2016"
- const probando = await  getOneeeeProduct(handle)
- console.log("la pruebita", probando)
- console.log("el resultado es:", probando?.body.data.product.title)
-}
+// export const gtOP = async () => {
+// //const id = "gid://shopify/Product/8377766707510"
+// let handle="balcones-2016"
+//  const probando = await  getOneeeeProduct(handle)
+//  console.log("la pruebita", probando)
+//  console.log("el resultado es:", probando?.body.data.product.title)
+// }
 
 
 export default async function Home() {
   const data = await getData()
 
-  await gtOP()
+ // await gtOP()
   return (
     <main className="flex min-h-screen flex-col items-center justify-between p-24">
       <h1>Title</h1> 
