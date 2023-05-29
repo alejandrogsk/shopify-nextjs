@@ -3,7 +3,7 @@ import { shopifyFetch } from "..";
 import paginationFragment from "../fragments/pagination";
 import productFragment from "../fragments/product";
 
-const getCollection = (handle: string, first: number, after: string|null) => {
+const getCollection = (handle: string, first: number, after: string|null = null) => {
     return shopifyFetch<ShopifyGetCollection>({ query: getCollectionProductsQuery, variables: {
         handle,
         first,

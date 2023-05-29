@@ -2,10 +2,31 @@ import Image from "next/image";
 import Link from "next/link";
 import React from "react";
 import { Product } from "../../types/Product";
+import calculatePercentageDifference from "@/utils/calculatePercentageDifference";
+
 const Card = ({product}:{product: Product}) => {
-    let { title, featuredImage, priceRange,handle, collections } = product;
+    let { title, featuredImage, priceRange, handle, collections, variants } = product;
+
+    
     return (
-        <li className="list-none flex flex-col h-full">
+        <li className="relative list-none flex flex-col h-full border-black border-2 p-3">
+                {
+                    !variants.edges[0].node.availableForSale &&
+                    <span className="absolute top-[-2px] right-[-2px] text-white bg-black p-2">No aviable</span>
+                }
+
+                {
+                    variants.edges[0].node.compareAtPrice?.amount &&
+                    <span className="absolute top-0 left-0 text-white bg-black p-2">
+                        -
+                        {
+                            calculatePercentageDifference(
+                                Number(variants.edges[0].node.compareAtPrice.amount),
+                                Number(variants.edges[0].node.price.amount)
+                            )
+                        }%
+                    </span>
+                }
                 <div className="w-full h-auto">
                     <Image
                         src={featuredImage.url}
@@ -18,14 +39,21 @@ const Card = ({product}:{product: Product}) => {
 
                 <span className="w-full bg-black h-[1px]"></span>
 
-                <div className="flex justify-between flex-col lg:flex-row text-lg font-medium " >
+                <div className="mt-2 grid grid-cols-1 lg:grid-cols-[70%_1fr] text-lg font-medium " >
                     <h2>{title}</h2>
 
-                    <span>${priceRange.minVariantPrice.amount}</span>
+                    <div className="ml-0 lg:ml-auto flex flex-col">
+                        {
+                            variants.edges[0].node.compareAtPrice &&
+                        <span className="line-through">${variants.edges[0].node.compareAtPrice?.amount ?? null}</span>
+                        }
+                        <span>${variants.edges[0].node.price.amount}</span>
+                    </div>
+
                 </div>
 
-                <div className="my-4">Type: <Link className="hover:underline" href={`/search/${collections?.edges[0].node.handle}`}>{collections?.edges[0].node.title}</Link></div>
-                <Link href={`/search/${collections?.edges[0].node.title.replaceAll(" ", "-")}/${handle}`} className="w-full bg-black text-white mt-auto h-[50px] inline-block
+                <div className="mt-auto mb-4">Type: <Link className="hover:underline" href={`/search/${collections?.edges[0].node.handle}`}>{collections?.edges[0].node.title}</Link></div>
+                <Link href={`/search/${collections?.edges[0].node.title.replaceAll(" ", "-")}/${handle}`} className="w-full bg-black text-white h-[50px] inline-block
                 hover:bg-white border-black border-2 hover:text-black duration-500
                 grid place-content-center
                 ">

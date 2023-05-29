@@ -24,9 +24,12 @@ export default async function Product({ params }:{
   const { slug } = params;
   const collection = await getData(slug)
   return (
-    <div className='relative h-screen'>
-        <h1 className='text-black text-5xl'>This collection is called: {collection.title}</h1>
-        <p>{collection.description}</p>
+
+    <div className='relative  py-20'>
+        <div className='mb-12'>
+        <h1 className='text-black text-5xl'>Find the best {collection.title} whiskey</h1>
+        <p className='mt-4'>{collection.description}</p>
+        </div>
     
         <Grid  edges={collection.products.edges}/>
 

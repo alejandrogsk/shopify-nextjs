@@ -39,12 +39,17 @@ const productFragment = /* GraphQL */ `
             amount
             currencyCode
           }
+          compareAtPrice{
+            amount
+            currencyCode
+          }
         }
       }
     }
     collections(first:10) {
         edges{
           node {
+            id
             title
             handle
         }

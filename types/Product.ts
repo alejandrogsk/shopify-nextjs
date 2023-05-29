@@ -16,6 +16,7 @@ export type Product = {
     collections?:{
         edges: {
             node: {
+                id: string;
                 title: string;
                 handle: string;
             }
@@ -31,10 +32,16 @@ export type Product = {
             id: number
             title: string
             availableForSale:boolean
-            price:string
-            compareAtPrice:string
+            price: {
+                amount:string
+                currencyCode:string
+              }
+              compareAtPrice: {
+                amount:string
+                currencyCode:string
+              }
           }
-        }
+        }[]
       }
 }
 
