@@ -24,6 +24,7 @@ const productFragment = /* GraphQL */ `
         currencyCode
       }
     }
+    totalInventory
     variants(first: 250) {
       edges {
         node {
@@ -41,6 +42,14 @@ const productFragment = /* GraphQL */ `
         }
       }
     }
+    collections(first:10) {
+        edges{
+          node {
+            title
+            handle
+        }
+}
+}
     featuredImage {
       ...image
     }

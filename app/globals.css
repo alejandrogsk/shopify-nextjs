@@ -20,3 +20,7 @@ body {
   color: black;
   background-color: white;
 }
+
+* {
+  font-family: "Oswald", sans-serif;
+}

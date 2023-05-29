@@ -1,10 +1,11 @@
-import { Product } from "@/types/Product";
 import { isShopifyError } from "../type-guards";
+
+
 type ExtractVariables<T> = T extends { variables: object }
     ? T["variables"]
     : never;
 
-const endpoint: string = process.env.SHOPIFY_STORE_DOMAIN || "";
+export const endpoint: string = process.env.SHOPIFY_STORE_DOMAIN || "";
 const key: string = process.env.SHOPIFY_STOREFRONT_ACCESS_TOKEN || "";
 
 export async function shopifyFetch<T>({
@@ -58,37 +59,9 @@ export async function shopifyFetch<T>({
     }
 }
 
-export type GetAllProducts = {
-    data: {
-        products: {
-            edges: {
-                node: Product;
-            }[];
-        };
-    };
-};
 
-export async function getAllProducts() {
-    return shopifyFetch<GetAllProducts>({
-        query: /* GraphQL */ `{
-            products(sortKey: TITLE, first: 100) {
-              edges{
-                node {
-                  ...product
-                }
-              }
-            }
-          }
-          ${productFragment}
-        `,
-    });
-}
 
-export async function getProductByHandle(handle:string) {
-    return shopifyFetch<any>({ query: getProductQuery, variables: {
-        handle
-    }})
-}
 
-import { getProductQuery}  from "./queries/Product";
-import productFragment from "./fragments/product";
+
+
+

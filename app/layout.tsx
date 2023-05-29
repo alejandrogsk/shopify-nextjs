@@ -1,7 +1,23 @@
+import Menu from '@/components/layout/Menu'
 import './globals.css'
-import { Inter } from 'next/font/google'
+import { Inter, Merriweather, Oswald } from 'next/font/google'
+import { Suspense } from 'react'
 
 const inter = Inter({ subsets: ['latin'] })
+
+const merriweather = Merriweather({
+  weight: ['400', '700'],
+  style: ['normal', 'italic'],
+  subsets: ['latin'],
+  display: 'swap',
+});
+
+const oswald = Oswald({
+  weight: ['400', '500', '600', '700'],
+  style: ['normal'],
+  subsets: ['latin'],
+  display: 'swap',
+});
 
 export const metadata = {
   title: 'Create Next App',
@@ -9,7 +25,7 @@ export const metadata = {
 }
 
 
-
+// @ts-expect-error
 export default function RootLayout({
   children,
 }: {
@@ -17,7 +33,17 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={inter.className}>{children}</body>
+      <body className={`${inter.className} ${merriweather.className} ${oswald.className}`}>
+        
+        <Menu />
+        <Suspense>
+
+          <main>
+          {children}
+          </main>
+        </Suspense>
+      
+      </body>
     </html>
   )
 }

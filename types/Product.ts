@@ -13,6 +13,29 @@ export type Product = {
     }
     featuredImage: ImageAttributes
     totalInventory:number
+    collections?:{
+        edges: {
+            node: {
+                title: string;
+                handle: string;
+            }
+        }[]
+    }
+    seo: {
+        title: string
+        description: string
+    }
+    variants: {
+        edges: {
+          node: {
+            id: number
+            title: string
+            availableForSale:boolean
+            price:string
+            compareAtPrice:string
+          }
+        }
+      }
 }
 
 type ImageAttributes = {
