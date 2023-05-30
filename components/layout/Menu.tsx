@@ -4,7 +4,7 @@ import React from 'react'
 
 
 export default async function Menu() {
-const menuData = await getMenu("main-menu")
+  const menuData = await getMenu("main-menu")
   let endpoint = "https://whiskey-store-test.myshopify.com"
   return (
     <header className='bg-black py-2 px-6'>

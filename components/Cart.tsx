@@ -4,9 +4,9 @@ import React, { useEffect, useState } from 'react'
 const Cart = () => {
   const [isVisible, setIsVisible] = useState(false)
   useEffect(() => {
-    setTimeout(() => {
-        setIsVisible(true)
-    },2000)
+    // setTimeout(() => {
+    //     setIsVisible(true)
+    // },2000)
   },[])  
 
   const handleClose = () => {

@@ -36,16 +36,11 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${inter.className} ${merriweather.className} ${oswald.className}`}>
-        
-        <Menu />
         <Suspense>
-
-          <main>
+          <Menu />
             <Layout>
-              
               {children}
             </Layout>
-          </main>
         </Suspense>
         <Cart />
       </body>
