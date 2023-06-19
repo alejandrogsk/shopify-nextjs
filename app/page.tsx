@@ -1,21 +1,33 @@
+import Banner from '@/components/Home/Banner';
 import Grid from '@/components/Products/Grid';
+import { getPageByID } from '@/lib/shopify/queries/pages';
 import { getAllProducts } from '@/lib/shopify/queries/product';
 const getData = async () => {
-  const req = await getAllProducts()
-  if( req.status !== 200){
-    throw new Error('Failed to fetch data');
+  const reqPage = await getPageByID("gid://shopify/Page/118707159350")
+  if( reqPage.status !== 200){
+    throw new Error('Failed to fetch Home page data');
   }
-  return req.body.data.products
+  const reqProducts = await getAllProducts()
+  if( reqProducts.status !== 200){
+    throw new Error('Failed to fetch products data');
+  }
+  const homePage = reqPage.body.data.page
+  const products = reqProducts.body.data.products;
+  return {
+    homePage,
+    products
+  }
 }
 
 export default async function Home() {
-  const data = await getData()
+  const { homePage,
+    products} = await getData()
 
   return (
       
-    <div className=" py-20">
-      <h1>Title</h1> 
-      <Grid edges={data.edges} />
+    <div className="">
+      <Banner title={homePage.title} body={homePage.body}/>
+      <Grid edges={products.edges} />
     </div>
   )
 }

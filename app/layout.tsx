@@ -2,7 +2,6 @@ import Menu from '@/components/layout/Menu'
 import './globals.css'
 import { Inter, Merriweather, Oswald } from 'next/font/google'
 import { Suspense } from 'react'
-import Layout from '@/components/layout/Layout'
 import Cart from '@/components/Cart'
 
 const inter = Inter({ subsets: ['latin'] })
@@ -38,9 +37,7 @@ export default function RootLayout({
       <body className={`${inter.className} ${merriweather.className} ${oswald.className}`}>
         <Suspense>
           <Menu />
-            <Layout>
               {children}
-            </Layout>
         </Suspense>
         <Cart />
       </body>
