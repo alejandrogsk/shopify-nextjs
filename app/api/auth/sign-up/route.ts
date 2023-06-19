@@ -1,4 +1,3 @@
-import { NextApiRequest, NextApiResponse } from "next";
 import { NextResponse } from "next/server";
 import { zfd } from "zod-form-data";
 import { z } from "zod"
@@ -108,6 +107,6 @@ export async function POST(req: Request) {
 }
 
 
-export async function GET(req: NextApiRequest, res: NextApiResponse){
+export async function GET(req: Request){
  return NextResponse.json({ok:true})
 }
