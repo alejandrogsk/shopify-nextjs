@@ -8,8 +8,8 @@ const Banner = ({ title, body}:
     {
         title: string, body:string
     }) => {
-    const imageData = parse(body);
-    const imageSRC = imageData.props?.src.replaceAll("480","2000");
+    const imageData:any = parse(body);
+    const imageSRC = imageData?.props?.src.replaceAll("480","2000");
   return (
     <div className={`relative h-screen w-full overflow-hidden grid grid-cols-1 lg:grid-cols-2`}
     style={{
