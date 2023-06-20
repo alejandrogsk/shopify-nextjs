@@ -1,5 +1,6 @@
 import Banner from '@/components/Home/Banner';
 import Grid from '@/components/Products/Grid';
+import Wrapper from '@/components/layout/Wrapper';
 import { getPageByID } from '@/lib/shopify/queries/pages';
 import { getAllProducts } from '@/lib/shopify/queries/product';
 const getData = async () => {
@@ -27,7 +28,9 @@ export default async function Home() {
       
     <div className="font-oswald">
       <Banner title={homePage.title} body={homePage.body}/>
+      <Wrapper customStyle='my-4 md:my-8 lg:my-12'>
       <Grid edges={products.edges} />
+      </Wrapper>
     </div>
   )
 }
