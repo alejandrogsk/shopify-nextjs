@@ -1,13 +1,13 @@
-import Forms from '@/components/Auth/Forms'
-import SignInImage from '@/components/Auth/SignInImage'
+import  { SignInForm, SignUpForm } from '@/components/Auth/Forms'
+import Wrapper from '@/components/layout/Wrapper'
 const page = async () => {
   return (
-    <div className='text-black'>
-      <div className='grid grid-cols-[300px_1fr] max-h-[28.125rem]'>
-        <SignInImage />
-        <Forms />
+    <Wrapper >
+      <div className='grid grid-cols-1 md:grid-cols-2 gap-12 md:gap-8 lg:gap-12 min-h-screen py-4 md:py-20'>
+        <SignInForm />
+        <SignUpForm />
       </div>
-    </div>
+    </Wrapper>
   )
 }
 export default page
