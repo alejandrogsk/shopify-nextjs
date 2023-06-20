@@ -8,7 +8,7 @@ export default function Menu({menuData}:{menuData:any}) {
   return (
     <header className='bg-black py-2 px-6'>
       <nav className='flex justify-between '>
-      <div className='text-white'>Menu</div>
+      <Link className='text-white font-merriweather font-bold' href="/">Brown & Brothers</Link>
 
       <ul className='flex gap-2'>
         {
