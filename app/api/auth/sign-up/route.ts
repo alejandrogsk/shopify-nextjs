@@ -93,6 +93,7 @@ export async function POST(req: Request) {
 
       response.cookies.set('token', accessToken, {
         httpOnly: true,
+        sameSite: "strict",
         secure:true,
         expires: new Date(Date.now() + 60 * 60 * 24),
         path: "/"

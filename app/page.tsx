@@ -25,7 +25,7 @@ export default async function Home() {
 
   return (
       
-    <div className="">
+    <div className="font-oswald">
       <Banner title={homePage.title} body={homePage.body}/>
       <Grid edges={products.edges} />
     </div>

@@ -4,13 +4,14 @@ import { Inter, Merriweather, Oswald } from 'next/font/google'
 import { Suspense } from 'react'
 import Cart from '@/components/Cart'
 import { getMenu } from '@/lib/shopify/queries/menu'
-const inter = Inter({ subsets: ['latin'] })
+const inter = Inter({ subsets: ['latin'], variable:"--font-inter" })
 
 const merriweather = Merriweather({
   weight: ['400', '700'],
   style: ['normal', 'italic'],
   subsets: ['latin'],
   display: 'swap',
+  variable: "--font-merriweather"
 });
 
 const oswald = Oswald({
@@ -18,6 +19,7 @@ const oswald = Oswald({
   style: ['normal'],
   subsets: ['latin'],
   display: 'swap',
+  variable: "--font-oswald"
 });
 
 export const metadata = {
@@ -39,7 +41,8 @@ export default async function RootLayout({
   console.log("menuData", menuData)
   return (
     <html lang="en">
-      <body className={`${inter.className} ${merriweather.className} ${oswald.className}`}>
+      <body className={`${inter.variable} ${merriweather.variable} merriweather ${oswald.variable} oswald
+      `}>
         <Suspense>
           <Menu menuData={menuData} />
               {children}

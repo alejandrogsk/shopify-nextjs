@@ -1,4 +1,5 @@
 import Grid from "@/components/Products/Grid";
+import Wrapper from "@/components/layout/Wrapper";
 import getCollection from "@/lib/shopify/queries/collections";
 import { getProductByHandle } from "@/lib/shopify/queries/product";
 import { Product } from "@/types/Product";
@@ -30,6 +31,7 @@ async function getRelatedProducts(handle:string| undefined) {
     const relatedCollection = await getCollection(handle, 4, null)
     if (relatedCollection.status !== 200) {
         throw new Error("Failed to fetch data");
+        //Here should redirect to 404
     }
     return relatedCollection.body.data.collection
 }
@@ -40,9 +42,9 @@ const page = async ({ params }: { params: { name: string } }) => {
     const relatedProducts = await getRelatedProducts(collections?.edges[0].node.handle)
 
     return (
-        <div className="mx-4 md:mx-8 lg:mx-20">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-0 py-4">
-                <div className="h-[90vh] relative w-auto flex items-center justify-center">
+            <Wrapper>
+            <div className="relative grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-0 py-4">
+                <div className="h-auto w-full relativeflex items-center justify-center">
                     <Image
                         src={featuredImage.url}
                         alt={featuredImage.altText ?? `${title} image`}
@@ -51,13 +53,14 @@ const page = async ({ params }: { params: { name: string } }) => {
                         className="w-auto h-full"
                     />
                 </div>
-                <div className="flex flex-col py-2">
+
+                <div className="flex flex-col py-2  py-20">
                         <h1 className="text-3xl">{title}</h1>
                     <div className="flex my-3">
                         <span className="text-2xl">${Math.round(Number(prices))}</span>
                         <span className="ml-3 text-2xl line-through text-gray-400">{pricesDiscount ? Math.round(Number(pricesDiscount)): ""}</span>
                     </div>
-                    <p>{description}</p>
+                    <p className="font-inter normal-case	">{description}</p>
                     <div className="flex my-4">
                         {
                             totalInventory < 10
@@ -83,7 +86,7 @@ const page = async ({ params }: { params: { name: string } }) => {
             />
 }
 
-        </div>
+</Wrapper>
     );
 };
 
@@ -93,8 +96,8 @@ export default page;
 const RelatedProducts = ({edges, currenProductId}: { edges: {node: Product}[], currenProductId: string}) => {
  const related = edges.filter((product) => product.node.id !== currenProductId );
     return(
-        <div>
-            <h3>Related Products</h3>
+        <div className="mt-12">
+            <h3 className="text-2xl">Related Products</h3>
             <Grid edges={related} />
         </div>
     )

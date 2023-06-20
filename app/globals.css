@@ -22,5 +22,6 @@ body {
 }
 
 * {
-  font-family: "Oswald", sans-serif;
+  font-family: var(--font-oswald);
+  text-transform: uppercase;
 }

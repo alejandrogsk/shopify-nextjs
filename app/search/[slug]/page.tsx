@@ -1,4 +1,5 @@
 import Grid from '@/components/Products/Grid';
+import Wrapper from '@/components/layout/Wrapper';
 import getCollection from '@/lib/shopify/queries/collections';
 
 export async function generateMetadata({ params }:{params:{slug:string}}){
@@ -24,6 +25,7 @@ export default async function Product({ params }:{
   const { slug } = params;
   const collection = await getData(slug)
   return (
+    <Wrapper>
 
     <div className='relative  py-20'>
         <div className='mb-12'>
@@ -35,6 +37,7 @@ export default async function Product({ params }:{
 
 
     </div>
+    </Wrapper>
   )
 }
 
