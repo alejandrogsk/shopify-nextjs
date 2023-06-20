@@ -22,7 +22,9 @@ const Banner = ({ title, body}:
         <div className='hidden lg:block'></div>
 
         <Wrapper customStyle='relative flex flex-col justify-center items-start gap-4'>
-            <h1 className='text-white text-5xl font-semibold uppercase'>Providing our customers the best whiskey since 1883</h1>
+            <h1 className='text-white text-5xl font-semibold uppercase'
+            style={{textShadow: "1px 1px 1px black"}}
+            >Providing our customers the best whiskey since 1883</h1>
             <Link href="/search/bourbon" className="mt-4 bg-black text-white h-[50px] inline-block
                 hover:bg-white border-black border-2 hover:text-black duration-500
                 grid place-content-center uppercase font-regular border-white px-3
