@@ -1,22 +1,24 @@
 import { Customer } from "@/types/Customer";
 import { shopifyFetch } from "..";
+type CustomerUserMutationError = {
+    field: string[];
+    message: string;
+    code: string;
+};
 
+/**
+ * Create new customers
+ */
 type ShopifyCreateNewCustomer = {
     data: {
         customerCreate: {
-            customer: Customer,
-            customerUserErrors: CustomerUserMutationError[]
-        }
-    },
-    variables: { input: Customer}
-    errors?: [{message: string}]
-}
-
-type CustomerUserMutationError = {
-    field: string[],
-    message: string,
-    code: string;
-}
+            customer: Customer;
+            customerUserErrors: CustomerUserMutationError[];
+        };
+    };
+    variables: { input: Customer };
+    errors?: [{ message: string }];
+};
 
 
 const createNewCustomerMutation = /* GraphQL */ `
@@ -38,54 +40,58 @@ const createNewCustomerMutation = /* GraphQL */ `
     }
 `;
 
-export async function createNewCustomer(input:Customer) {
-    return shopifyFetch<ShopifyCreateNewCustomer>({ 
-      query: createNewCustomerMutation, 
-      variables: {
-        input
-      }
-    })
-  }
-
-
+export async function createNewCustomer(input: Customer) {
+    return shopifyFetch<ShopifyCreateNewCustomer>({
+        query: createNewCustomerMutation,
+        variables: {
+            input,
+        },
+    });
+}
 
 /**
- * Access TOKEN
+ * Create New Access TOKEN
  */
 type ShopifyCreateNewAccessToken = {
-    data:{
-    customerAccessTokenCreate: {
-        customerAccessToken: {
-            accessToken: string
-        },
-        customerUserErrors: CustomerUserMutationError
-    }}
+    data: {
+        customerAccessTokenCreate: {
+            customerAccessToken: {
+                accessToken: string;
+            };
+            customerUserErrors: CustomerUserMutationError;
+        };
+    };
     variables: {
         input: {
-            email: string,
-            password: string
+            email: string;
+            password: string;
+        };
+    };
+    errors?: [{ message: string }];
+};
+const createNewAccessTokenMutation = /* GraphQL */ `
+    mutation customerAccessTokenCreate(
+        $input: CustomerAccessTokenCreateInput!
+    ) {
+        customerAccessTokenCreate(input: $input) {
+            customerAccessToken {
+                accessToken
+            }
+            customerUserErrors {
+                message
+            }
         }
     }
-    errors?: [{message: string}]
-}
-const createNewAccessTokenMutation = /* GraphQL */ `
-mutation customerAccessTokenCreate($input: CustomerAccessTokenCreateInput!) {
-  customerAccessTokenCreate(input: $input) {
-   customerAccessToken {
-      accessToken
-    }
-    customerUserErrors {
-      message
-    }
-  }
-}
-`
+`;
 
-export async function createNewCustomerAccessToken(input:{email: string, password: string}) {
-    return shopifyFetch<ShopifyCreateNewAccessToken>({ 
-      query: createNewAccessTokenMutation, 
-      variables: {
-        input
-      }
-    })
-  }
+export async function createNewCustomerAccessToken(input: {
+    email: string;
+    password: string;
+}) {
+    return shopifyFetch<ShopifyCreateNewAccessToken>({
+        query: createNewAccessTokenMutation,
+        variables: {
+            input,
+        },
+    });
+}
