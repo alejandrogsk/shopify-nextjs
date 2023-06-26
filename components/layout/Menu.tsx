@@ -1,5 +1,4 @@
 "use client"
-import { getMenu } from '@/lib/shopify/queries/menu'
 import Link from 'next/link'
 import React, { useEffect, useRef, useState } from 'react'
 import Bag from '../icons/Bag'

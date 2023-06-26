@@ -1,113 +1,147 @@
 import { NextResponse } from "next/server";
 import { zfd } from "zod-form-data";
-import { z } from "zod"
-import { createNewCustomer, createNewCustomerAccessToken } from "@/lib/shopify/mutations/customers";
+import { z } from "zod";
+import { Customer } from "@/types/Customer";
+import {
+    createNewCustomer,
+    createNewCustomerAccessToken,
+} from "@/lib/shopify/mutations/customers";
+import { registerSchema } from "@/lib/api/auth/schemas";
 
-
-const schema = zfd.formData({
-  email: zfd.text(z.string({
-    required_error: "Email is required",
-    invalid_type_error: "Provide a valid email"
-  }).email()),
-  password: zfd.text(z.string({
-    required_error: "Password is required",
-    invalid_type_error: "Name must be a string",
-  })),
-  firstName: zfd.text(z.string({
-    required_error: "Your name is required",
-    invalid_type_error: "Name must be a string",
-  }).min(3, {message: "At least 3 characters"}).max(30, {message: "No more than 30 characters"})),
-  lastName: zfd.text(z.string({
-    required_error: "Your name is required",
-    invalid_type_error: "Name must be a string",
-  }).min(3, {message: "At least 3 characters"}).max(30, {message: "No more than 30 characters"})),
-  phone: zfd.text(z.string({
-    required_error: "A phone is required",
-    invalid_type_error: "Name must be a string",
-  }).min(11, {message: "Enter a valid number (11-12 digits)"}).max(12, {message: "Enter a valid number (11-12 digits)"})),
-  acceptsMarketing: zfd.checkbox({trueValue: "true"})
-});
 
 
 export async function POST(req: Request) {
-    const {method} = req;
-
-    if (method !== "POST") {
-      return NextResponse.json({
-        error: { message: `Method ${method} Not Allowed` },
-      }, {status: 405})
-    }
-    const body = await req.formData()
-    const response = schema.safeParse(body);
-
-    if (!response.success) {
-      const { errors } = response.error;
-      return NextResponse.json({
-        error: { message: "Invalid request", errors },
-      }, {status: 400})
-    }
-
-    const { email, password, firstName, lastName, phone, acceptsMarketing } = response.data;
     try {
-      const newUser = await createNewCustomer({
-        firstName, lastName,email,password,acceptsMarketing,
-        phone: `+${phone}`
-      })
+        const reqData = await req.json();
+        console.log("body", reqData);
+        const body = registerSchema.safeParse(reqData);
 
-      if(newUser.body.errors !==undefined && newUser.body.errors.length > 0){
-        let message = newUser.body.errors[0].message;
-        return NextResponse.json({message}, {status:500})
-      }
-      const {customer, customerUserErrors} = newUser.body.data.customerCreate;
-
-
-      if(customer === null){
-        if(customerUserErrors.length > 0){
-          let message = customerUserErrors[0].message;
-          return NextResponse.json({message}, {status:400})
-        } else {
-          return NextResponse.json({message: "Sorry, something went wrong"}, {status:400})
+        if (body.success === false) {
+            console.log(body.error.errors[0].message);
+            return NextResponse.json({
+                ok: false,
+                message: body.error.errors[0].message,
+            });
         }
-      }
+        console.log("response: ", body);
 
-      let accessToken = null;
-      try {
-        //After user registration I need to generate the access token
-        const accessTokenGeneration = await createNewCustomerAccessToken({email, password})
-        accessToken = accessTokenGeneration.body.data.customerAccessTokenCreate.customerAccessToken.accessToken;
-      } catch (error) {
-          return NextResponse.json({ 
-            message: "Unsuccessful", 
-            data: {
-              customer,
-              token: accessToken
-            } 
-          },{status: 400})
-      }
+        //Create user
+        const { newUser } = await createNewShopifyCustomer(body.data);
 
-      let response = NextResponse.json({ message: "Success", data: {
-        customer,
-        token: true
-        } 
-      },{status: 200})
+        //Create Token
+        const { token } = await createAccessToken(
+            body.data.userEmail,
+            body.data.userPassword
+        );
 
-      response.cookies.set('token', accessToken, {
-        httpOnly: true,
-        sameSite: "strict",
-        secure:true,
-        expires: new Date(Date.now() + 60 * 60 * 24),
-        path: "/"
-      });
+        if (!token) return ErrorResponse()
+        //Create a response
+        const response = NextResponse.json(
+            {
+                message: "Success",
+                data: {
+                    customer: newUser,
+                    token: true,
+                },
+            },
+            { status: 200 }
+        );
+        // //Set the cookie for the response
+        response.cookies.set("token", token, {
+            httpOnly: true,
+            sameSite: "strict",
+            secure: true,
+            expires: new Date(Date.now() + 60 * 60 * 24),
+            path: "/",
+        });
 
-      return response;
-      
-    } catch (e:any) {
-      console.log("e in catch", e)
-      return NextResponse.json({ message: e?.error?.message??"Try latter"}, {status: 500})
+        return response
+    } catch (e) {
+        console.log("e in CATCH::::___:::", e);
+        return NextResponse.json({
+            ok: false,
+            message: "Todo bad",
+        });
     }
 }
 
+const createAccessToken = async (email: string, password: string):Promise<{ok: boolean, message:string, token:string|null}> => {
+    try {
+        const accessTokenGeneration = await createNewCustomerAccessToken({
+            email,
+            password,
+        });
 
-export async function GET(req: Request){
- return NextResponse.json({ok:true})
+        const accessToken =
+            accessTokenGeneration.body.data.customerAccessTokenCreate
+                .customerAccessToken.accessToken;
+        return { ok: true, token: accessToken, message:"Sucess!" };
+    } catch (error) {
+        return {
+          ok: false,
+                message: "Error: User was created, but NOT the TOKEN",
+                token: null
+        }
+    }
+};
+
+type User = z.infer<typeof registerSchema>;
+const createNewShopifyCustomer = async (user: User): Promise<{ok: boolean, message:string, newUser:Customer|null}> => {
+    const {
+        userName,
+        userLastName,
+        userPassword,
+        userEmail,
+        userPhone,
+        userAcceptsMarketing,
+    } = user;
+    try {
+        const newUser = await createNewCustomer({
+            firstName: userName,
+            lastName: userLastName,
+            email: userEmail,
+            password: userPassword,
+            acceptsMarketing: userAcceptsMarketing,
+            phone: `+${userPhone}`,
+        });
+
+        if (
+            newUser.body.errors !== undefined &&
+            newUser.body.errors.length > 0
+        ) {
+            let message = newUser.body.errors[0].message;
+            return { ok: false, message, newUser: null}
+        }
+
+        const { customer, customerUserErrors } =
+            newUser.body.data.customerCreate;
+        if (customer === null) {
+            if (customerUserErrors.length > 0) {
+                let message = customerUserErrors[0].message;
+                return { ok: false, message, newUser: null}
+            } else {
+              return { ok: false, message:"Sorry something went wrong", newUser: null}
+            }
+        }
+
+        return { ok: true, newUser:customer, message:"Suces" };
+    } catch (error) {
+        console.log("Error creating a new user");
+        return { ok: false, message:"Error creating a new user", newUser: null}
+    }
+};
+
+const ErrorResponse = (message:string="Something went wrong", statusCode:number=400):NextResponse => {
+  return NextResponse.json(
+    {
+      ok: false,
+      message: message
+    },
+    {status: statusCode}
+  )
+}
+
+
+export async function GET(req: Request) {
+    return NextResponse.json({ ok: true });
 }

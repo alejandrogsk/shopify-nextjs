@@ -11,7 +11,18 @@ export const SignUpForm = () => {
     } = useForm();
     const onSubmit = async (data: any) => {
         console.log(data);
+        const req = await fetch("/api/auth/sign-up", {
+            method:"POST",
+            headers:{
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({userName:"ale", userLastName: "some name"}),
+        })
+        const res = req;
+        console.log("res: ", res)
     };
+
     console.log(watch("example"))
     return (
         <div>
@@ -26,14 +37,15 @@ export const SignUpForm = () => {
                     </label>
                     <input
                         className="p-2 border-black border-2 bg-white placeholder:text-gray-400"
-                        {...(register("userName"),
+                        {...(register("userName",
                         {
                             required: true,
                             maxLength: 20,
-                            placeholder: "John",
-                            type: "text",
-                            id: "userName",
-                        })}
+                            
+                        }))}
+                        placeholder="John"
+                        type="text"
+                        id="userName"
                     />
                     {errors.userName?.type === 'required' && <p role="alert">First name is required</p>}
                 </div>
@@ -47,14 +59,15 @@ export const SignUpForm = () => {
                     </label>
                     <input
                         className="p-2 border-black border-2 bg-white placeholder:text-gray-400"
-                        {...(register("userLastName"),
+                        {...(register("userLastName",
                         {
                             required: true,
                             maxLength: 20,
-                            placeholder: "Smith",
-                            type: "text",
-                            id: "userLastName",
-                        })}
+                            
+                        }))}
+                        placeholder="Smith"
+                            type="text"
+                            id="userLastName"
                     />
                 </div>
 
@@ -67,14 +80,15 @@ export const SignUpForm = () => {
                     </label>
                     <input
                         className="p-2 border-black border-2 bg-white placeholder:text-gray-400"
-                        {...(register("userEmail"),
+                        {...(register("userEmail",
                         {
                             required: true,
                             maxLength: 50,
-                            placeholder: "johnsmith@gmail.com",
-                            type: "email",
-                            id: "userEmail",
-                        })}
+                            
+                        }))}
+                        placeholder="johnsmith@gmail.com"
+                            type="email"
+                            id="userEmail"
                     />
                 </div>
 
@@ -87,14 +101,14 @@ export const SignUpForm = () => {
                     </label>
                     <input
                         className="p-2 border-black border-2 bg-white placeholder:text-gray-400"
-                        {...(register("userPassword"),
+                        {...(register("userPassword",
                         {
                             required: true,
                             maxLength: 30,
-                            placeholder: "Fe1453_1pf",
-                            type: "password",
-                            id: "userPassword",
-                        })}
+                        }))}
+                        placeholder="Fe1453_1pf"
+                        type="password"
+                        id="userPassword"
                     />
                 </div>
 
