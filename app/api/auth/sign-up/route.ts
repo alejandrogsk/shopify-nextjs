@@ -1,12 +1,12 @@
 import { NextResponse } from "next/server";
-import { zfd } from "zod-form-data";
 import { z } from "zod";
 import { Customer } from "@/types/Customer";
 import {
     createNewCustomer,
-    createNewCustomerAccessToken,
 } from "@/lib/shopify/mutations/customers";
 import { registerSchema } from "@/lib/api/auth/schemas";
+import createAccessToken from "@/lib/api/auth/createAccessToken";
+import ErrorResponse from "@/lib/api/ErrorResponse";
 
 
 
@@ -65,25 +65,6 @@ export async function POST(req: Request) {
     }
 }
 
-const createAccessToken = async (email: string, password: string):Promise<{ok: boolean, message:string, token:string|null}> => {
-    try {
-        const accessTokenGeneration = await createNewCustomerAccessToken({
-            email,
-            password,
-        });
-
-        const accessToken =
-            accessTokenGeneration.body.data.customerAccessTokenCreate
-                .customerAccessToken.accessToken;
-        return { ok: true, token: accessToken, message:"Sucess!" };
-    } catch (error) {
-        return {
-          ok: false,
-                message: "Error: User was created, but NOT the TOKEN",
-                token: null
-        }
-    }
-};
 
 type User = z.infer<typeof registerSchema>;
 const createNewShopifyCustomer = async (user: User): Promise<{ok: boolean, message:string, newUser:Customer|null}> => {
@@ -131,15 +112,7 @@ const createNewShopifyCustomer = async (user: User): Promise<{ok: boolean, messa
     }
 };
 
-const ErrorResponse = (message:string="Something went wrong", statusCode:number=400):NextResponse => {
-  return NextResponse.json(
-    {
-      ok: false,
-      message: message
-    },
-    {status: statusCode}
-  )
-}
+
 
 
 export async function GET(req: Request) {
