@@ -1,5 +1,5 @@
 "use client";
-
+import { redirect } from 'next/navigation'
 import { useForm } from "react-hook-form";
 export const SignUpForm = () => {
     const {
@@ -19,6 +19,7 @@ export const SignUpForm = () => {
         })
         const res = await req.json()
         console.log("res: ", res)
+        if(res.data.ok) redirect('/')
     };
 
     console.log(watch("userEmail"))
