@@ -1,7 +1,10 @@
-import Grid from "@/components/Products/Grid";
+import Card from "@/components/Products/Card";
 import Wrapper from "@/components/layout/Wrapper";
 import getCollection from "@/lib/shopify/queries/collections";
-import { getProductByHandle } from "@/lib/shopify/queries/product";
+import {
+    getProductByHandle,
+    getProductById,
+} from "@/lib/shopify/queries/product";
 import { Product } from "@/types/Product";
 import Image from "next/image";
 import React from "react";
@@ -10,6 +13,7 @@ async function getData(slug: string) {
     if (products.status !== 200) {
         throw new Error("Failed to fetch data");
     }
+
     return products.body.data.product;
 }
 
@@ -25,26 +29,52 @@ export async function generateMetadata({
     };
 }
 
-
-async function getRelatedProducts(handle:string| undefined) {
-    if(typeof handle === "undefined") return null;
-    const relatedCollection = await getCollection(handle, 4, null)
-    if (relatedCollection.status !== 200) {
-        throw new Error("Failed to fetch data");
-        //Here should redirect to 404
+async function getRltdProd(related: string|undefined) {
+    if (typeof related === "undefined") {
+        return null;
     }
-    return relatedCollection.body.data.collection
+    const values: string[] = JSON.parse(related);
+    if (values.length < 1) {
+        return null;
+    }
+    const products = await Promise.all(
+        values.map(async (value) => {
+            const prod = await getProductById(value);
+            return prod?.body?.data?.product;
+        })
+    );
+
+    return products;
 }
+
 const page = async ({ params }: { params: { name: string } }) => {
-    const { id, title, featuredImage, description, priceRange, totalInventory, variants, collections } = await getData(params.name);
+    const {
+        id,
+        title,
+        featuredImage,
+        description,
+        priceRange,
+        totalInventory,
+        variants,
+        collections,
+        brand,
+        alcohol,
+        related,
+    } = await getData(params.name);
     const prices = variants.edges[0].node.price.amount;
     const pricesDiscount = variants.edges[0]?.node?.compareAtPrice?.amount;
-    const relatedProducts = await getRelatedProducts(collections?.edges[0].node.handle)
 
+    // Need to get the related products wich is a "[]"
+
+    const myRlatedProducts = await getRltdProd(related?.value??undefined);
+
+    console.log("////////////////////////***********************");
+    console.log("myRlatedProducts", myRlatedProducts);
+    console.log("////////////////////////***********************");
     return (
-            <Wrapper>
+        <Wrapper>
             <div className="relative grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-0 py-4">
-                <div className="h-auto w-full relativeflex items-center justify-center">
+                <div className="h-auto max-h-screen w-full relativeflex items-center justify-center">
                     <Image
                         src={featuredImage.url}
                         alt={featuredImage.altText ?? `${title} image`}
@@ -55,50 +85,82 @@ const page = async ({ params }: { params: { name: string } }) => {
                 </div>
 
                 <div className="flex flex-col py-2  py-20">
-                        <h1 className="text-3xl">{title}</h1>
-                    <div className="flex my-3">
-                        <span className="text-2xl">${Math.round(Number(prices))}</span>
-                        <span className="ml-3 text-2xl line-through text-gray-400">{pricesDiscount ? Math.round(Number(pricesDiscount)): ""}</span>
+                    <h1 className="text-3xl">{title}</h1>
+                    <div className="flex mt-3">
+                        <span className="text-2xl">
+                            ${Math.round(Number(prices))}
+                        </span>
+                        <span className="ml-3 text-2xl line-through text-gray-400">
+                            {pricesDiscount
+                                ? Math.round(Number(pricesDiscount))
+                                : ""}
+                        </span>
                     </div>
-                    <p className="font-inter normal-case	">{description}</p>
+                    <span className="my-3 block w-full h-[2px] bg-black"></span>
+                    <div className="flex justify-between items-center">
+
                     <div className="flex my-4">
-                        {
-                            totalInventory < 10
-                            ? <span className="text-red-500">Only: </span>
-                            : <span className="text-black">Available: </span>
-                        }
+                        {totalInventory < 10 ? (
+                            <span className="text-red-500">Only: </span>
+                            ) : (
+                                <span className="text-black">Available: </span>
+                                )}
                         <span className="ml-2">{totalInventory}</span>
                     </div>
+                    {brand?.value && (
+                        <h2 className="bold">{`${brand.value}`}</h2>
+                    )}
+                    {alcohol?.value && (
+                        <h3>{`Alcohol: ${alcohol.value}%`}</h3>
+                    )}
 
-                    <button className="w-full bg-white text-black mt-auto h-[50px] inline-block
+                                </div>
+<p className="font-inter normal-case	my-8">{description}</p>
+
+                    <button
+                        className="w-full bg-white text-black mt-auto h-[50px] inline-block
                 hover:bg-[#1A1A1A] border-black border-2 hover:text-white duration-500
-                grid place-content-center mb-2">Add to Cart</button>
-                    <button className="w-full bg-black text-white  h-[50px] inline-block
+                grid place-content-center mb-2"
+                    >
+                        Add to Cart
+                    </button>
+                    <button
+                        className="w-full bg-black text-white  h-[50px] inline-block
                 hover:bg-[#1A1A1A] border-black border-2 duration-500
-                grid place-content-center">Buy Now</button>
+                grid place-content-center"
+                    >
+                        Buy Now
+                    </button>
                 </div>
             </div>
 
-{
-   ( relatedProducts !== null && typeof relatedProducts?.products.edges !== "undefined") &&
-            <RelatedProducts edges={relatedProducts?.products.edges}
-            currenProductId={id}
-            />
-}
-
-</Wrapper>
+            {myRlatedProducts !== null &&
+            typeof myRlatedProducts[0] !== "undefined" ? (
+                <RelatedProducts products={myRlatedProducts} />
+            ) : (
+                <p className="w-full text-center my-20">No related product has been found</p>
+            )}
+        </Wrapper>
     );
 };
 
 export default page;
 
-
-const RelatedProducts = ({edges, currenProductId}: { edges: {node: Product}[], currenProductId: string}) => {
- const related = edges.filter((product) => product.node.id !== currenProductId );
-    return(
+const RelatedProducts = ({ products }: { products: Product[] }) => {
+    return (
         <div className="mt-12">
             <h3 className="text-2xl">Related Products</h3>
-            <Grid edges={related} />
+            <RelatedGrid products={products} />
         </div>
-    )
-}
+    );
+};
+
+const RelatedGrid = ({ products }: { products: Product[] }) => {
+    return (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 w-full  gap-x-2 md:gap-x-4 lg:gap-x-8 gap-y-4 md:gap-y-8 lg:gap-y-12 my-4 md:my-8 lg:my-12">
+            {products.map((product) => (
+                <Card key={product.id} product={product} />
+            ))}
+        </div>
+    );
+};

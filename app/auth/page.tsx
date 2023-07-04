@@ -4,12 +4,12 @@ import { redirect } from 'next/navigation'
 import  { SignInForm, SignUpForm } from '@/components/Auth/Forms'
 import Wrapper from '@/components/layout/Wrapper'
 const page = async () => {
-  const cookieStore = cookies()
-  const token = cookieStore.has("token")
-  console.log("token in auth", token)
-  if(token){
-    redirect('/')
-  }
+  // const cookieStore = cookies()
+  // const token = cookieStore.has("token")
+  // console.log("token in auth", token)
+  // if(token){
+  //    redirect('/')
+  // }
 
 
   return (

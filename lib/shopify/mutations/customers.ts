@@ -57,6 +57,7 @@ type ShopifyCreateNewAccessToken = {
         customerAccessTokenCreate: {
             customerAccessToken: {
                 accessToken: string;
+                expiresAt:string;
             };
             customerUserErrors: CustomerUserMutationError;
         };
@@ -76,6 +77,7 @@ const createNewAccessTokenMutation = /* GraphQL */ `
         customerAccessTokenCreate(input: $input) {
             customerAccessToken {
                 accessToken
+                expiresAt
             }
             customerUserErrors {
                 message

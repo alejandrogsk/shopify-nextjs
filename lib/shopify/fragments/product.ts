@@ -1,78 +1,89 @@
-import imageFragment from './image';
-import seoFragment from './seo';
+import alcoholFragment from "./alcohol";
+import brandFragment from "./brand";
+import imageFragment from "./image";
+import relatedFragment from "./relatedProducts";
+import seoFragment from "./seo";
 
 const productFragment = /* GraphQL */ `
-  fragment product on Product {
-    id
-    handle
-    availableForSale
-    title
-    description
-    descriptionHtml
-    options {
-      id
-      name
-      values
-    }
-    priceRange {
-      maxVariantPrice {
-        amount
-        currencyCode
-      }
-      minVariantPrice {
-        amount
-        currencyCode
-      }
-    }
-    totalInventory
-    variants(first: 250) {
-      edges {
-        node {
-          id
-          title
-          availableForSale
-          selectedOptions {
-            name
-            value
-          }
-          price {
-            amount
-            currencyCode
-          }
-          compareAtPrice{
-            amount
-            currencyCode
-          }
-        }
-      }
-    }
-    collections(first:10) {
-        edges{
-          node {
+    fragment product on Product {
+        id
+        handle
+        availableForSale
+        title
+        description
+        descriptionHtml
+        options {
             id
-            title
-            handle
+            name
+            values
         }
-}
-}
-    featuredImage {
-      ...image
-    }
-    images(first: 20) {
-      edges {
-        node {
-          ...image
+        priceRange {
+            maxVariantPrice {
+                amount
+                currencyCode
+            }
+            minVariantPrice {
+                amount
+                currencyCode
+            }
         }
-      }
+        totalInventory
+        variants(first: 250) {
+            edges {
+                node {
+                    id
+                    title
+                    availableForSale
+                    selectedOptions {
+                        name
+                        value
+                    }
+                    price {
+                        amount
+                        currencyCode
+                    }
+                    compareAtPrice {
+                        amount
+                        currencyCode
+                    }
+                }
+            }
+        }
+        collections(first: 10) {
+            edges {
+                node {
+                    id
+                    title
+                    handle
+                }
+            }
+        }
+        featuredImage {
+            ...image
+        }
+        images(first: 20) {
+            edges {
+                node {
+                    ...image
+                }
+            }
+        }
+        seo {
+            ...seo
+        }
+        tags
+        updatedAt
+
+        ...brand
+        ...alcohol
+        ...related
     }
-    seo {
-      ...seo
-    }
-    tags
-    updatedAt
-  }
-  ${imageFragment}
-  ${seoFragment}
+
+    ${imageFragment}
+    ${seoFragment}
+    ${brandFragment}
+    ${alcoholFragment}
+    ${relatedFragment}
 `;
 
 export default productFragment;

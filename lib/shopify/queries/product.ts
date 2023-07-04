@@ -10,11 +10,27 @@ type ShopifyProductByHandleOperation = {
   variables: { handle: string };
 };
 
+type ShopifyProductByIdOperation = {
+  data: {
+    product: Product;   
+  };
+  variables: { id: string };
+};
+
 //Get Single Product 
 //Query
 const getProductQuery = /* GraphQL */ `
   query getProduct($handle: String!) {
     product(handle: $handle) {
+      ...product
+    }
+  }
+  ${productFragment}
+`;
+
+const getProductByIdQuery = /* GraphQL */ `
+  query getProduct($id: ID!) {
+    product(id: $id) {
       ...product
     }
   }
@@ -26,6 +42,17 @@ export async function getProductByHandle(handle:string) {
     query: getProductQuery, 
     variables: {
       handle
+    }
+  })
+}
+
+
+//Get product by id
+export async function getProductById(id:string) {
+  return shopifyFetch<ShopifyProductByIdOperation>({ 
+    query: getProductByIdQuery, 
+    variables: {
+      id
     }
   })
 }

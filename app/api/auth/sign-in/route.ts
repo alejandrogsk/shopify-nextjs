@@ -20,17 +20,21 @@ export async function POST(req: Request) {
 
         
         //Create Token
-        const { token } = await createAccessToken(
+        const { token, expiresAt } = await createAccessToken(
             body.data.userEmail,
             body.data.userPassword
         );
 
-        if (!token) return ErrorResponse()
+        if (!token||!expiresAt) return ErrorResponse()
         //Create a response
         const response = NextResponse.json(
             {
                 message: "Success",
-                data: { token: true, },
+                data: { 
+                    token: true, 
+                    tokenVal: token, // THis is not necessary
+                    expiresAt //This is not necessary
+                },
             },
             { status: 200 }
         );
@@ -39,7 +43,7 @@ export async function POST(req: Request) {
             httpOnly: true,
             sameSite: "strict",
             secure: true,
-            expires: new Date(Date.now() + 60 * 60 * 24),
+            expires: new Date(expiresAt),
             path: "/",
         });
 

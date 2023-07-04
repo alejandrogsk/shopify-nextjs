@@ -43,6 +43,16 @@ export type Product = {
           }
         }[]
       }
+
+    brand: {
+        value?: string
+    }
+    alcohol: {
+        value?: string
+    }
+    related: {
+        value?: string
+    }
 }
 
 type ImageAttributes = {
