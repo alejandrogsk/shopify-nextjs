@@ -3,6 +3,6 @@ export type Customer = {
     lastName: string;
     email: string;
     password: string;
-    phone: string;
+    //phone: string;
     acceptsMarketing: boolean;
 };

@@ -26,8 +26,13 @@ export async function POST(req: Request) {
         console.log("response: ", body);
 
         //Create user
-        const { newUser } = await createNewShopifyCustomer(body.data);
-
+        const { newUser, ok, message } = await createNewShopifyCustomer(body.data);
+        console.log("new USER CREATED: ", newUser)
+        if(!ok){
+            return NextResponse.json({
+                newUser, ok, message
+            });
+        }
         //Create Token
         const { token, expiresAt } = await createAccessToken(
             body.data.userEmail,
@@ -42,8 +47,7 @@ export async function POST(req: Request) {
                 data: {
                     customer: newUser,
                     token: true,
-                    tokenVal: token, // THis is not necessary
-                    expiresAt //This is not necessary
+                    ok:true
                 },
             },
             { status: 200 }
@@ -75,7 +79,6 @@ const createNewShopifyCustomer = async (user: User): Promise<{ok: boolean, messa
         userLastName,
         userPassword,
         userEmail,
-        userPhone,
         userAcceptsMarketing,
     } = user;
     try {
@@ -85,8 +88,12 @@ const createNewShopifyCustomer = async (user: User): Promise<{ok: boolean, messa
             email: userEmail,
             password: userPassword,
             acceptsMarketing: userAcceptsMarketing,
-            phone: `+${userPhone}`,
+           
         });
+
+        if(newUser.body.data.customerCreate.customerUserErrors[0]){
+            return { ok: false, message:newUser.body.data.customerCreate.customerUserErrors[0].message, newUser: null}
+        }
 
         if (
             newUser.body.errors !== undefined &&
@@ -107,10 +114,10 @@ const createNewShopifyCustomer = async (user: User): Promise<{ok: boolean, messa
             }
         }
 
-        return { ok: true, newUser:customer, message:"Suces" };
-    } catch (error) {
-        console.log("Error creating a new user");
-        return { ok: false, message:"Error creating a new user", newUser: null}
+        return { ok: true, newUser:customer, message:"Succes" };
+    } catch (e: any ) {
+        console.log("Error creating a new user (CATCH)", e?.error?.message ?? "error in catch: createNewShopifyCustomer");
+        return { ok: false, message: e?.error?.message??"Error creating a new user", newUser: null}
     }
 };
 

@@ -27,13 +27,6 @@ export const registerSchema = z.object({
         })
         .min(8, { message: "At least 3 characters" })
         .max(30, { message: "No more than 30 characters" }),
-    userPhone: z
-        .string({
-            required_error: "A phone is required",
-            invalid_type_error: "Name must be a string",
-        })
-        .min(11, { message: "Enter a valid number (11-12 digits)" })
-        .max(12, { message: "Enter a valid number (11-12 digits)" }),
     userAcceptsMarketing: z.boolean({
         required_error: "You accept markeing or not?",
     }),

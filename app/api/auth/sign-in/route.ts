@@ -6,7 +6,6 @@ import { NextResponse } from "next/server";
 export async function POST(req: Request) {
     try {
         const reqData = await req.json();
-        console.log("body", reqData);
         const body = loginSchema.safeParse(reqData);
 
         if (body.success === false) {
@@ -25,15 +24,14 @@ export async function POST(req: Request) {
             body.data.userPassword
         );
 
-        if (!token||!expiresAt) return ErrorResponse()
+        if (!token||!expiresAt) return ErrorResponse("Try with other email or password")
         //Create a response
         const response = NextResponse.json(
             {
                 message: "Success",
                 data: { 
                     token: true, 
-                    tokenVal: token, // THis is not necessary
-                    expiresAt //This is not necessary
+                    ok:true
                 },
             },
             { status: 200 }
