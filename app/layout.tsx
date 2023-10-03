@@ -4,7 +4,7 @@ import { Inter, Merriweather, Oswald } from 'next/font/google'
 import { Suspense } from 'react'
 import { getMenu } from '@/lib/shopify/queries/menu'
 import Footer from '@/components/layout/Footer'
-const inter = Inter({ subsets: ['latin'], variable:"--font-inter" })
+const inter = Inter({ subsets: ['latin'], variable: "--font-inter" })
 
 const merriweather = Merriweather({
   weight: ['400', '700'],
@@ -40,9 +40,11 @@ export default async function RootLayout({
       <body className={`${inter.variable} ${merriweather.variable} merriweather ${oswald.variable} oswald
       `}>
         <Menu menuData={menuData} />
-        <Suspense>
-              {children}
-        </Suspense>
+        <main className='min-h-[90vh]'>
+          <Suspense>
+            {children}
+          </Suspense>
+        </main>
         <Footer />
       </body>
     </html>

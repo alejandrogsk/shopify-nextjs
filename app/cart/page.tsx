@@ -27,7 +27,7 @@ const page = async () => {
 
   return (
     <Wrapper>
-        <div className='grid-cols-1'>
+        <div className='grid-cols-1 min-h-[90vh]'>
             <h1 className='font-semibold text-3xl py-12'>Complete your purchase</h1>
             {/* <span className='text-red-600 text-6xl'>Checkout URL: {checkoutUrl}</span> */}
             <div className='grid grid-cols-1  lg:grid-cols-[1fr_400px] gap-4 md:gap-8 lg:gap-12'>

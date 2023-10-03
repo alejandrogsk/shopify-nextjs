@@ -17,6 +17,7 @@ const Logout = () => {
                     });
                     //Should handle errors here
                     router.refresh();
+                    router.push('/auth');
                 });
             }}
         >

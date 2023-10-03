@@ -15,6 +15,7 @@ const BuyNow = ({ variantId, title="Buy Now", customStyles }: { variantId: strin
                     startTransition(async () => {
                         await addItem(variantId);
                         //Should handle errors here
+                        router.refresh()
                         router.push("/cart")
                     })
                 }}

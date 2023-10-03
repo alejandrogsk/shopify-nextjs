@@ -5,7 +5,6 @@ const Wrapper = ({children, customStyle}:{children:React.ReactNode, customStyle?
     <div className={`px-4 md:px-8 lg:px-12 ${customStyle && customStyle}`}>
         {children}
     </div>
-
   )
 }
 

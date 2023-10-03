@@ -14,7 +14,6 @@ async function getData(slug: string) {
     if (products.status !== 200) {
         throw new Error("Failed to fetch data");
     }
-
     return products.body.data.product;
 }
 
@@ -82,7 +81,7 @@ const page = async ({ params }: { params: { name: string } }) => {
                     />
                 </div>
 
-                <div className="flex flex-col py-2  py-20">
+                <div className="flex flex-col justify-center	 py-2  py-20">
                     <h1 className="text-3xl">{title}</h1>
                     <div className="flex mt-3">
                         <span className="text-2xl">
