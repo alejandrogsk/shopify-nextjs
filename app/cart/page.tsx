@@ -23,7 +23,7 @@ const page = async () => {
         )
     }
     
-    const { id, lines, cost, checkoutUrl, totalQuantity } = cartData?.body?.data?.cart
+    const { lines, cost, totalQuantity } = cartData?.body?.data?.cart
 
   return (
     <Wrapper>
