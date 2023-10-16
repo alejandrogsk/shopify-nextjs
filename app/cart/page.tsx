@@ -23,8 +23,8 @@ const page = async () => {
         )
     }
     
-    const { lines, cost, totalQuantity } = cartData?.body?.data?.cart
-
+    const { lines, cost, checkoutUrl } = cartData?.body?.data?.cart
+console.log('checkoutUrl', checkoutUrl)
   return (
     <Wrapper>
         <div className='grid-cols-1 min-h-[90vh]'>
@@ -38,7 +38,7 @@ const page = async () => {
                         } )
                     }
                 </div>
-                    <PaymentDetail cost={cost} />
+                <PaymentDetail cost={cost} checkoutUrl={checkoutUrl} />
             </div>
         </div>
     </Wrapper>

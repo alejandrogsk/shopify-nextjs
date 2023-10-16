@@ -1,7 +1,6 @@
 import { Cost } from "@/lib/shopify/types";
-import Link from "next/link";
 
-const PaymentDetail = ({ cost }: { cost: Cost }) => {
+const PaymentDetail = ({ cost, checkoutUrl }: { cost: Cost, checkoutUrl:string }) => {
     return (
         <div className="relative">
             <div className="flex flex-col relative lg:sticky top-12 left-0 right-0">
@@ -32,9 +31,9 @@ const PaymentDetail = ({ cost }: { cost: Cost }) => {
                 </div>
             </div>
 
-            <Link className="w-full h-8 bg-gold-main text-white mt-12 flex items-center justify-center" href="/cart/payments">
+            <a className="w-full h-8 bg-gold-main text-white mt-12 flex items-center justify-center" aria-label="Pay Now" href={checkoutUrl}>
                 Pay Now
-            </Link>
+            </a>
         </div>
         </div>
     );
