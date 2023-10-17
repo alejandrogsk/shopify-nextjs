@@ -37,7 +37,7 @@ export default async function RootLayout({
 
   return (
     <html lang="en">
-      <body className={`${inter.variable} ${merriweather.variable} merriweather ${oswald.variable} oswald
+      <body className={`${inter.variable} ${merriweather.variable}  ${oswald.variable} 
       `}>
         <Menu menuData={menuData} />
         <main className='min-h-[90vh]'>

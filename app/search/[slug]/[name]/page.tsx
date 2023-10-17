@@ -9,6 +9,7 @@ import {
 import { Product } from "@/types/Product";
 import Image from "next/image";
 import React from "react";
+
 async function getData(slug: string) {
     const products = await getProductByHandle(slug);
     if (products.status !== 200) {

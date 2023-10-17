@@ -1,7 +1,6 @@
 "use server"
 import { addToCart, createCart, getCart, removeFromCart, updateCart } from "@/lib/shopify/functions/cart";
 import { cookies } from "next/headers";
-import { customerData } from "../Auth/actions";
 
 //Add item to the cart
 export const addItem = async (productId: string) => {
@@ -18,7 +17,6 @@ const createCartIfNeeded = async ():Promise<string|undefined> => {
       const cart = await createCart();
       if (cart.status === 200) {
         let id = cart.body.data.cartCreate.cart.id;
-        console.log("cart created____________________°°°°°°°°°°°°°°°", cart.body.data.cartCreate.cart)
         cookies().set("cartId", id);
         cartId = id;
       } else {
@@ -43,7 +41,6 @@ const addItemToCart = async (cartId:string|undefined, productId:string, productQ
         quantity: productQuantity,
       },
     ]);
-    console.log("cartWithData", cartWithData);
   } catch (error) {
     console.log("Error", error);
     throw new Error("Error trying to add product to the cart");

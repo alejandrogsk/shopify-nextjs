@@ -7,9 +7,6 @@ const CartProduct = ({ node }: { node: CartItem }) => {
     let nodeId = node.id
     let product = node.merchandise.product
     const { title, description, variants } = product;
-    console.log("product TTTTTAAAAAGGGGGGSSSSS", product.tags);
-    console.log("product options", product.options);
-    console.log("product variants", product.variants);
     return (
         <div className="border-b-[1px] border-black grid grid-cols-[150px_1fr] w-full py-2">
             <Link href={`/search/${product.tags[0].replace(" ","-")}/${product.handle}`}>

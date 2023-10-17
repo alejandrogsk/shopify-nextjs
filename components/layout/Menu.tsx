@@ -24,7 +24,7 @@ export default function Menu({ menuData }: { menuData: any }) {
                     <div className="hidden md:flex gap-6 items-center">
                         <ul className="flex gap-2">
                             {menuData.map((item: any, i: any) => (
-                                <li className="" key={i}>
+                                <li key={i}>
                                     <Link
                                         href={item.path.replace(endpoint, "")}
                                     >
